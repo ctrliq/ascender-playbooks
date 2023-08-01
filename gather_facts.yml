@@ -1,0 +1,9 @@
+- name: Gather System Facts
+  hosts: all
+  tasks:
+    - name: Gather package facts
+      ansible.builtin.package_facts:
+        manager: auto
+ 
+    - name: Gather service facts
+      ansible.builtin.service_facts:

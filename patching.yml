@@ -1,0 +1,31 @@
+- name: Patch Enterprise Linux Hosts
+  hosts: all
+  become: true
+  vars:
+    security_updates: false
+    update_kernel: true
+    reboot_kernel: true
+  tasks:
+
+    - name: Install Updates (exclude Kernel)
+      ansible.builtin.dnf:
+        name: '*'
+        state: latest
+        security: "{{ security_updates }}"
+        skip_broken: yes
+        exclude: kernel*
+      register: updates
+
+    - name: Install Kernel Updates
+      ansible.builtin.dnf:
+        name: 'kernel'
+        state: latest
+      when: update_kernel | bool
+      register: updated_kernel
+
+    - name: Reboot Server if Kernel Updates were done
+      ansible.builtin.reboot:
+      when:
+        - update_kernel | bool
+        - reboot_kernel | bool
+        - updated_kernel.changed
