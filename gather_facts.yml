@@ -4,6 +4,12 @@
     - name: Gather package facts
       ansible.builtin.package_facts:
         manager: auto
+      when: ansible_os_family != 'Windows'
  
     - name: Gather service facts
       ansible.builtin.service_facts:
+      when: ansible_os_family != 'Windows'
+
+    - name: Gather Windows Disk Facts
+      community.windows.win_disk_facts:
+      when: ansible_os_family == 'Windows'
