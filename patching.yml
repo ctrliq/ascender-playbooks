@@ -23,6 +23,11 @@
       when: update_kernel | bool
       register: updated_kernel
 
+    - name: Gather Package Facts
+      ansible.builtin.package_facts:
+        manager: auto
+      when: ansible_os_family != 'Windows'
+
     - name: Reboot Server if Kernel Updates were done
       ansible.builtin.reboot:
       when:
