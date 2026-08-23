@@ -1,3 +1,4 @@
+---
 - name: Patch Enterprise Linux Hosts
   hosts: all
   become: true
@@ -7,16 +8,19 @@
     reboot_kernel: true
   tasks:
 
-    - name: Install Updates (exclude Kernel)
+    # Installing the latest available package is the whole point of a
+    # patching run, so the idempotency rule is skipped for these two tasks
+    # rather than pinning them to `state: present`.
+    - name: Install Updates (exclude Kernel)  # noqa: package-latest
       ansible.builtin.dnf:
         name: '*'
         state: latest
         security: "{{ security_updates }}"
-        skip_broken: yes
+        skip_broken: true
         exclude: kernel*
       register: updates
 
-    - name: Install Kernel Updates
+    - name: Install Kernel Updates  # noqa: package-latest
       ansible.builtin.dnf:
         name: 'kernel'
         state: latest

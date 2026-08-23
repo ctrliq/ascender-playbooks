@@ -1,4 +1,6 @@
-- hosts: all
+---
+- name: Configure SELinux
+  hosts: all
   become: true
   vars:
     selinux_state: enforcing
@@ -7,11 +9,11 @@
     selinux_reboot: true
   tasks:
     - name: Ensure python3-libselinux is installed
-      dnf:
+      ansible.builtin.dnf:
         name: python3-libselinux
         state: present
 
-    - name: "{{ selinux_state }} SELinux"
+    - name: Set SELinux state to {{ selinux_state }}
       ansible.posix.selinux:
         state: "{{ selinux_state }}"
         policy: "{{ selinux_policy }}"
@@ -19,7 +21,7 @@
       register: selinux
 
     - name: Reboot if required
-      reboot:
+      ansible.builtin.reboot:
       when:
         - selinux_reboot | bool
         - selinux.reboot_required
