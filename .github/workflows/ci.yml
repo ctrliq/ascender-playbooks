@@ -1,0 +1,45 @@
+---
+name: Ascender Playbooks CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
+        with:
+          python-version: "3.x"
+
+      - name: Install ansible-lint
+        run: pip install ansible-lint==26.8.0
+
+      - name: Install the collections the playbooks call into
+        # ansible-lint resolves every module reference against the collections
+        # that are installed. A runner carries ansible-core alone, so without
+        # these two the syntax check reports ansible.posix.selinux and
+        # community.windows.win_disk_facts as unknown modules and fails.
+        run: ansible-galaxy collection install ansible.posix community.windows
+
+      - name: Run ansible-lint
+        # yamllint runs as part of this: ansible-lint reports its findings
+        # under the yaml[...] rule, so a separate job would only duplicate them.
+        run: ansible-lint
