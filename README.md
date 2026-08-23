@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](./LICENSE.md)
 [![Ansible](https://img.shields.io/badge/ansible--core-%3E%3D2.16-blue.svg)](https://github.com/ansible/ansible)
 
-A small set of ready-to-run Ansible playbooks for use as job templates in [Ascender](https://github.com/ctrliq/ascender). Each one is self-contained, targets `all` hosts, and exposes its behaviour through variables you can override from a job template without editing the playbook.
+A small set of ready-to-run Ansible playbooks for use as job templates in [Ascender](https://github.com/ctrliq/ascender). Each one is self-contained, targets `all` hosts, and exposes its behaviour through variables you can override from a job template without editing it.
 
 ## Requirements
 
@@ -14,7 +14,7 @@ A small set of ready-to-run Ansible playbooks for use as job templates in [Ascen
 
 ## Using the playbooks
 
-Point an Ascender project at this repository, then create a job template for the playbook you want. To run one directly instead:
+Point an Ascender project at this repository and add a job template for the playbook you want. To run one directly:
 
 ```bash
 ansible-playbook -i inventory patching.yml -e update_kernel=false
